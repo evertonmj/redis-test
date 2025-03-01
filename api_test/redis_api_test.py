@@ -3,11 +3,13 @@ import requests
 import os
 
 BASE_URL = os.environ['REST_API_ENDPOINT']
-HEADERS = {"Content-Type": "application/json"}
+HEADERS = {"Content-Type": "application/json", "Accept": "application/json", "Host": BASE_URL}
+
+print(BASE_URL)
 
 def create_database():
     url = f"{BASE_URL}/databases"
-    payload = json.dumps({"name": "test_db"})
+    payload = json.dumps({"host": "$BASE_URL"})
     response = requests.post(url, data=payload, headers=HEADERS, verify=False)
     
     if response.status_code == 201:
