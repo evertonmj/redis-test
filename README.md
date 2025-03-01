@@ -75,4 +75,25 @@ GET test:tb:1
 
 ### 5. Run test case ###
 
+#### 5.1 Download test script
+```sh
+wget https://raw.githubusercontent.com/evertonmj/redis-test/refs/heads/main/replication-test.sh
+```
 
+#### 5.2 Update databases endpoints
+
+##### 5.2.1 Open the replication-test.sh file
+```sh
+vim replication-test.sh
+```
+
+##### 5.2.2 Update endpoints
+
+Update endpoints for SOURCE_DB and REPLICA_DB with recent created databases and close the file.
+
+Press esc key and them `:wq` to save and exit.
+
+#### 5.2 Execute
+```sh
+sh replication-test.sh
+```
