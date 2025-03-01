@@ -5,6 +5,8 @@ import os
 # Configurações de ambiente
 BASE_URL = os.environ.get('REST_API_ENDPOINT'   )  # Fallback caso a variável não esteja definida
 CA_CERT_PATH = os.environ.get('CA_CERT_PATH')  # Caminho do certificado CA
+DB_NAME=everton_redis_db
+MEMORY_SIZE=100
 
 HEADERS = {
     "Content-Type": "application/json",
@@ -18,18 +20,14 @@ print(f"Using API Endpoint: {BASE_URL}")
 VERIFY = CA_CERT_PATH if CA_CERT_PATH else True  # False para testes (não recomendado)
 
 def create_database():
-    url = f"{BASE_URL}/bdbs"
-    payload = json.dumps({"host": BASE_URL})
-    
-    try:
-        response = requests.post(url, data=payload, headers=HEADERS, verify=VERIFY)
-        response.raise_for_status()
-        db_id = response.json().get("id")
-        print(f"Database created with ID: {db_id}")
-        return db_id
-    except requests.exceptions.RequestException as e:
-        print(f"Failed to create database: {e}")
-        return None
+    url = f"{REDIS_API_URL}/bdbs"
+    data = {
+        "name": DB_NAME,
+        "memory_size": MEMORY_SIZE,
+        "type": "redis"
+    }
+    response = requests.post(url, headers=HEADERS, data=json.dumps(data), cert=(CA_CERT_PATH, CA_CERT_PATH), verify=True)
+    return response.json()
 
 def create_user(email, name, role):
     url = f"{BASE_URL}/users"
