@@ -3,7 +3,7 @@ import requests
 import os
 
 # Configurações de ambiente
-BASE_URL = os.environ.get('REST_API_ENDPOINT')  # Fallback caso a variável não esteja definida
+BASE_URL = os.environ.get('REST_API_ENDPOINT'   )  # Fallback caso a variável não esteja definida
 CA_CERT_PATH = os.environ.get('CA_CERT_PATH')  # Caminho do certificado CA
 
 HEADERS = {
@@ -18,7 +18,7 @@ print(f"Using API Endpoint: {BASE_URL}")
 VERIFY = CA_CERT_PATH if CA_CERT_PATH else True  # False para testes (não recomendado)
 
 def create_database():
-    url = f"{BASE_URL}/databases"
+    url = f"{BASE_URL}/bdbs"
     payload = json.dumps({"host": BASE_URL})
     
     try:
@@ -56,7 +56,7 @@ def list_users():
         print(f"Failed to retrieve users: {e}")
 
 def delete_database(db_id):
-    url = f"{BASE_URL}/databases/{db_id}"
+    url = f"{BASE_URL}/bdbs/{db_id}"
     
     try:
         response = requests.delete(url, headers=HEADERS, verify=VERIFY)
