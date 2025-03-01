@@ -1,76 +1,80 @@
-import json
 import requests
-import os
+import json
+import ssl
 
-# Configurações de ambiente
-BASE_URL = os.environ.get('REST_API_ENDPOINT'   )  # Fallback caso a variável não esteja definida
-CA_CERT_PATH = os.environ.get('CA_CERT_PATH')  # Caminho do certificado CA
-DB_NAME=everton_redis_db
-MEMORY_SIZE=100
+# Configurações do Redis REST API com autenticação via certificado
+REDIS_API_URL = "https://your-redis-server:8080/v1"
+CERT_PATH = "certfile.pem"
+KEY_PATH = "cert.key"  # Remova esta linha se não precisar de chave
+VERIFY_SSL = True  # Altere para False se quiser desativar a verificação SSL
+HEADERS = {"Content-Type": "application/json"}
 
-HEADERS = {
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-    "Host": BASE_URL
-}
+# Testa se a chave privada existe e é necessária
+USE_PRIVATE_KEY = False
+try:
+    with open(KEY_PATH, "r") as key_file:
+        USE_PRIVATE_KEY = True
+except FileNotFoundError:
+    print("[INFO] Chave privada não encontrada, tentando apenas com o certificado.")
 
-print(f"Using API Endpoint: {BASE_URL}")
 
-# Apenas verificação do certificado CA
-VERIFY = CA_CERT_PATH if CA_CERT_PATH else True  # False para testes (não recomendado)
+def create_database(database_name):
+    url = f"{REDIS_API_URL}/databases"
+    data = {"name": database_name}
+    cert = (CERT_PATH, KEY_PATH) if USE_PRIVATE_KEY else CERT_PATH
+    try:
+        response = requests.post(url, headers=HEADERS, data=json.dumps(data), cert=cert, verify=VERIFY_SSL)
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.SSLError as e:
+        print("[ERROR] Erro SSL:", e)
+    except requests.exceptions.RequestException as e:
+        print("[ERROR] Erro na requisição:", e)
+    return None
 
-def create_database():
-    url = f"{REDIS_API_URL}/bdbs"
-    data = {
-        "name": DB_NAME,
-        "memory_size": MEMORY_SIZE,
-        "type": "redis"
-    }
-    response = requests.post(url, headers=HEADERS, data=json.dumps(data), cert=(CA_CERT_PATH, CA_CERT_PATH), verify=True)
+
+def set_key(database, key, value):
+    url = f"{REDIS_API_URL}/databases/{database}/keys/{key}"
+    data = {"value": value}
+    cert = (CERT_PATH, KEY_PATH) if USE_PRIVATE_KEY else CERT_PATH
+    response = requests.put(url, headers=HEADERS, data=json.dumps(data), cert=cert, verify=VERIFY_SSL)
     return response.json()
 
-def create_user(email, name, role):
-    url = f"{BASE_URL}/users"
-    payload = json.dumps({"email": email, "name": name, "role": role})
-    
-    try:
-        response = requests.post(url, data=payload, headers=HEADERS, verify=VERIFY)
-        response.raise_for_status()
-        print(f"User {name} created successfully.")
-    except requests.exceptions.RequestException as e:
-        print(f"Failed to create user {name}: {e}")
 
-def list_users():
-    url = f"{BASE_URL}/users"
-    
-    try:
-        response = requests.get(url, headers=HEADERS, verify=VERIFY)
-        response.raise_for_status()
-        users = response.json()
-        print("\nUsers in the system:")
-        for user in users:
-            print(f"Name: {user['name']}, Role: {user['role']}, Email: {user['email']}")
-    except requests.exceptions.RequestException as e:
-        print(f"Failed to retrieve users: {e}")
+def get_key(database, key):
+    url = f"{REDIS_API_URL}/databases/{database}/keys/{key}"
+    cert = (CERT_PATH, KEY_PATH) if USE_PRIVATE_KEY else CERT_PATH
+    response = requests.get(url, headers=HEADERS, cert=cert, verify=VERIFY_SSL)
+    if response.status_code == 200:
+        return response.json()
+    return None
 
-def delete_database(db_id):
-    url = f"{BASE_URL}/bdbs/{db_id}"
-    
-    try:
-        response = requests.delete(url, headers=HEADERS, verify=VERIFY)
-        response.raise_for_status()
-        print("Database deleted successfully.")
-    except requests.exceptions.RequestException as e:
-        print(f"Failed to delete database: {e}")
 
-def main():
-    db_id = create_database()
-    if db_id:
-        create_user("john.doe@example.com", "John Doe", "db_viewer")
-        create_user("mike.smith@example.com", "Mike Smith", "db_member")
-        create_user("cary.johnson@example.com", "Cary Johnson", "admin")
-        list_users()
-        delete_database(db_id)
+def delete_key(database, key):
+    url = f"{REDIS_API_URL}/databases/{database}/keys/{key}"
+    cert = (CERT_PATH, KEY_PATH) if USE_PRIVATE_KEY else CERT_PATH
+    response = requests.delete(url, headers=HEADERS, cert=cert, verify=VERIFY_SSL)
+    return response.json()
+
 
 if __name__ == "__main__":
-    main()
+    database = "mydatabase"
+    key = "username"
+    value = "Everton"
+    
+    print("Criando banco de dados no Redis...")
+    db_response = create_database(database)
+    if db_response:
+        print(db_response)
+    else:
+        print("[ERROR] Falha ao criar banco de dados.")
+        exit()
+    
+    print("Salvando dado no Redis...")
+    print(set_key(database, key, value))
+    
+    print("Recuperando dado do Redis...")
+    print(get_key(database, key))
+    
+    print("Deletando dado do Redis...")
+    print(delete_key(database, key))
