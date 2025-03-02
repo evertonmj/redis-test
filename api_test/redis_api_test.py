@@ -1,80 +1,90 @@
 import requests
-import json
-import ssl
+from requests.auth import HTTPBasicAuth
+import urllib3
 
-# Configurações do Redis REST API com autenticação via certificado
-REDIS_API_URL = "https://your-redis-server:8080/v1"
-CERT_PATH = "certfile.pem"
-KEY_PATH = "cert.key"  # Remova esta linha se não precisar de chave
-VERIFY_SSL = True  # Altere para False se quiser desativar a verificação SSL
-HEADERS = {"Content-Type": "application/json"}
+# Disable SSL warnings
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-# Testa se a chave privada existe e é necessária
-USE_PRIVATE_KEY = False
-try:
-    with open(KEY_PATH, "r") as key_file:
-        USE_PRIVATE_KEY = True
-except FileNotFoundError:
-    print("[INFO] Chave privada não encontrada, tentando apenas com o certificado.")
-
-
-def create_database(database_name):
-    url = f"{REDIS_API_URL}/databases"
-    data = {"name": database_name}
-    cert = (CERT_PATH, KEY_PATH) if USE_PRIVATE_KEY else CERT_PATH
-    try:
-        response = requests.post(url, headers=HEADERS, data=json.dumps(data), cert=cert, verify=VERIFY_SSL)
-        response.raise_for_status()
-        return response.json()
-    except requests.exceptions.SSLError as e:
-        print("[ERROR] Erro SSL:", e)
-    except requests.exceptions.RequestException as e:
-        print("[ERROR] Erro na requisição:", e)
-    return None
-
-
-def set_key(database, key, value):
-    url = f"{REDIS_API_URL}/databases/{database}/keys/{key}"
-    data = {"value": value}
-    cert = (CERT_PATH, KEY_PATH) if USE_PRIVATE_KEY else CERT_PATH
-    response = requests.put(url, headers=HEADERS, data=json.dumps(data), cert=cert, verify=VERIFY_SSL)
-    return response.json()
-
-
-def get_key(database, key):
-    url = f"{REDIS_API_URL}/databases/{database}/keys/{key}"
-    cert = (CERT_PATH, KEY_PATH) if USE_PRIVATE_KEY else CERT_PATH
-    response = requests.get(url, headers=HEADERS, cert=cert, verify=VERIFY_SSL)
+def create_role(base_url, auth, role_name, role_management):
+    url = f"{base_url}/roles"
+    data = {"name": role_name, "management": role_management}
+    response = requests.post(url, auth=auth, json=data, verify=False)
     if response.status_code == 200:
-        return response.json()
-    return None
-
-
-def delete_key(database, key):
-    url = f"{REDIS_API_URL}/databases/{database}/keys/{key}"
-    cert = (CERT_PATH, KEY_PATH) if USE_PRIVATE_KEY else CERT_PATH
-    response = requests.delete(url, headers=HEADERS, cert=cert, verify=VERIFY_SSL)
-    return response.json()
-
-
-if __name__ == "__main__":
-    database = "mydatabase"
-    key = "username"
-    value = "Everton"
-    
-    print("Criando banco de dados no Redis...")
-    db_response = create_database(database)
-    if db_response:
-        print(db_response)
+        print(f"Role created - Name: {role_name} / ID: {response.json().get('uid')}")
     else:
-        print("[ERROR] Falha ao criar banco de dados.")
-        exit()
+        print("Error creating role")
+
+def create_database(base_url, auth, db_name):
+    url = f"{base_url}/bdbs"
+    data = {"name": db_name, "memory_size": 1073741824}
+    response = requests.post(url, auth=auth, json=data, verify=False)
     
-    print("Salvando dado no Redis...")
-    print(set_key(database, key, value))
-    
-    print("Recuperando dado do Redis...")
-    print(get_key(database, key))
-    
-    print("Deletando dado do Redis...")
-    print(delete_key(database, key))
+    if response.status_code == 200:
+        db_info = response.json()
+        print(f"Database created - Name: {db_info['name']}, UID: {db_info['uid']}")
+    else:
+        print("Error creating database")
+
+    return response.json().get("uid") if response.status_code == 200 else None
+
+def create_user(base_url, auth, email, name, role, password="defaultPass123"):
+    url = f"{base_url}/users"
+    data = {"email": email, "name": name, "role": role, "password": password}
+    response = requests.post(url, auth=auth, json=data, verify=False)
+    if response.status_code == 200:
+        user = response.json()
+        print(f"User Created - ID: {user['uid']}, Name: {user['name']}")
+    else:
+        print("Error creating user")
+
+def list_users(base_url, auth):
+    url = f"{base_url}/users"
+    response = requests.get(url, auth=auth, verify=False)
+    if response.status_code == 200:
+        users = response.json()
+        for user in users:
+            print(f"Name: {user['name']}, Role: {user['role']}, Email: {user['email']}")
+    else:
+        print("Error")
+
+def delete_database(base_url, auth, db_uid):
+    if not db_uid:
+        print("Database UID not found, skipping deletion.")
+        return
+    url = f"{base_url}/bdbs/{db_uid}"
+    response = requests.delete(url, auth=auth, verify=False)
+    print("Delete Database Status:", response.status_code)
+
+# Definição da URL e credenciais
+base_url = "https://172.16.22.21:9443/v1"
+auth = HTTPBasicAuth("admin@rl.org", "mkZGAIu")
+
+# Criar roles necessários
+roles = [
+    {
+        "name": "db_viewer",
+        "management": "db_viewer"
+    }, {
+        "name": "db_member",
+        "management": "db_member"
+    }
+]
+
+for role in roles:
+    create_role(base_url, auth, role['name'], role['management'])
+
+db_name = "ever-db-01"
+db_uid = create_database(base_url, auth, db_name)
+
+users = [
+    {"email": "john.doe@example.com", "name": "John Doe", "role": "db_viewer"},
+    {"email": "mike.smith@example.com", "name": "Mike Smith", "role": "db_member"},
+    {"email": "cary.johnson@example.com", "name": "Cary Johnson", "role": "admin"}
+]
+
+for user in users:
+    create_user(base_url, auth, user['email'], user['name'], user['role'])
+
+list_users(base_url, auth)
+
+delete_database(base_url, auth, db_uid)
