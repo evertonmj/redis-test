@@ -1,7 +1,8 @@
 import requests
 from requests.auth import HTTPBasicAuth
 import urllib3
-import config 
+import redis_api.config as config
+
 
 # disable SSL warnings
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
