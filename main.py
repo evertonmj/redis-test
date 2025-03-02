@@ -4,7 +4,7 @@ import redis_api.config as config
 from redis_api.redis_api_test import RedisAPI
 
 def run_replication_test():
-    script_path = os.path.join(os.path.dirname(__file__), 'replication_test', 'replication_test/replication_test.sh')
+    script_path = os.path.join(os.path.dirname(__file__), 'replication_test', 'replication-test.sh')
     subprocess.run(['bash', script_path])
 
 def run_redis_api_test():
@@ -64,7 +64,7 @@ def main():
         if choice == "1":
             run_replication_test()
         elif choice == "2":
-            run_redis_api_test()
+            subprocess.run(['python', os.path.join(os.path.dirname(__file__), 'redis_api', 'redis_api_test.py')])
         elif choice == "3":
             print("Exiting...")
             break
