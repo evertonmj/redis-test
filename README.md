@@ -11,13 +11,22 @@ In this project some Redis Enterprise features are tested and validated. It incl
 
 ------------
 
-1. ## Before Running the Scripts
+0. ## Before Running the Scripts
 
 ## Requirements
-* You must have a Redis Enterprise Account. You can try it for free here: [Try it for free](https://redis.io/try-free/).
+* You must have a Redis Enterprise Account. You can try it for free here: [Try it for free](https://redis.io/try-free/). After getting access to your account, you will need credentials (user/password) to interact with the API.
 
 * You must have access to a computer terminal. If you are using Microsoft Windows, [Powershell](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.5) is highly recommended.
 
+* Basic programming skills and how to use a computer terminal to interact with external services.
+
+* For the purposes of this test, a Bastion Host was available to connect and interact with Redis Services. Please, ask for support about how can you get ready to connect and interact with your cluster.
+
+1. ## Running Interactively
+
+You can perform this tests by running the main python script (main.py) or by running individual test script.
+
+- To run main script: `python main.py`
 
 2. ## Database Replication Test
 
@@ -31,9 +40,9 @@ This script was written in pure *nix bash and redis-cli tool. For more informati
 2. Ensure both the primary and replica databases are properly configured.
 3. Verify that data inserted into the primary database is replicated to the replica database.
 
-2. ## API Test
+2. ## REST API Test
 
-The API test script automates the process of managing Redis databases via a REST API. It allows operations such as:
+The API test script automates the process of managing Redis databases via a REST API. It executes the following operations:
 - Creating and deleting databases.
 - Managing roles and permissions.
 - Creating, updating, and deleting users.
@@ -43,18 +52,15 @@ The API test script automates the process of managing Redis databases via a REST
 
 1. Set up and run the API test by following the steps in [api_test/README.md](api_test/README.md).
 2. Ensure the API is available and accessible.
-3. Verify that data managed through the API is correctly reflected in the Redis system.
+3. Verify that data managed through the API is correctly reflected in the Redis system. Yous can check it at Redis Enterprise main dashboard
 
 ## Prerequisites
 To run the test scripts correctly, ensure you meet the following requirements:
 
-- Redis Enterprise installed and properly configured.
-- Python 3.x installed on your system.
-- Install required dependencies:
-
-```bash
-pip install requests urllib3
-```
+- Redis Enterprise account.
+- Rest API enabled
+- Redis credentials
+- Python and PIP 3.x installed. If you use a bastion host, these tools must be installed there.
 
 ## Environment Variables
 Before running the scripts, set up the following environment variables in a `.env` file or export them in the terminal:
@@ -85,7 +91,6 @@ source .env
 
 ### 3. Users or roles do not appear in Redis
 - Ensure that roles are created before assigning them to users.
-- Use the `list_users()` function in the API test script to verify registered users.
 
 ## License
 This project is licensed under the MIT License.

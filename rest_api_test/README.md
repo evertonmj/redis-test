@@ -3,22 +3,25 @@
 ## Overview
 This Python script provides a complete interface to interact with a Redis API. It automates the management of roles, databases, and users, offering functionalities such as:
 
-- Creating roles
-- Creating and deleting databases
-- Adding and managing users
-- Listing all registered users
-- Handling API errors gracefully
+- Create a New Database: Utilize the Database API to create a new database without using any modules.
+- Create Three New Users: Utilize the Users API to add three new users to the system with the following details:
+a. Email: john.doe@example.com, Name: John Doe, Role: db_viewer
+b. Email: mike.smith@example.com, Name: Mike Smith, Role: db_member
+c. Email: cary.johnson@example.com, Name: Cary Johnson, Role: admin
+- List and Display Users: Utilize the Users API to fetch and display all users in the specified format (name, role, and email).
+- Delete the Created Database: Database API to delete the previously created database
 
 ## Features
-- **Secure API Requests**: Uses `requests` with `HTTPBasicAuth`.
+- **Secure API Requests**: Uses `requests` with `HTTPBasicAuth` for authentication.
 - **Error Handling**: Detects connection failures, invalid requests, and authentication errors.
-- **Configuration Management**: Uses a separate `config.py` file for credentials and API settings.
-- **Automated Execution**: The script can run all operations in sequence.
-- **Modular Design**: Methods can be called individually or as a batch process.
+- **Configuration Management**: Uses a separate `config.py` file for parameters and API settings.
+- **Automated Execution**: The script run all operations in sequence.
 
 ## Prerequisites
-Ensure you have Python installed along with the necessary dependencies. You can install them using:
+- Python 3.x and PIP 3.x installed on your system.
+- redis-cli tool installed on your system
 
+Dependencies:
 ```bash
 pip install requests urllib3
 ```
@@ -30,15 +33,23 @@ The script relies on a `config.py` file to store API connection details and defa
 ```python
 # config.py
 
+# Redis API Configuration
 BASE_URL = "https://your-redis-api-url/v1"
 USERNAME = "your-admin-username"
 PASSWORD = "your-admin-password"
 
+# Redis Roles
 ROLES = [
-    {"name": "db_viewer"},
-    {"name": "db_member"}
+    {
+        "name": "db_viewer",
+        "management": "db_viewer"
+    }, {
+        "name": "db_member",
+        "management": "db_member"
+    }
 ]
 
+# Redis Database Configuration
 DB_NAME = "database1"
 DB_MAX_MEMORY = 1073741824  # 1GB
 

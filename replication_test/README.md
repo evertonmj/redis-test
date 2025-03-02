@@ -68,6 +68,10 @@ If replication does not work, ensure the source and replica databases are correc
 - Verify if replication is enabled and if source-db is correctly set as source at replica-db.
 - Check the Redis logs to verify that replication is active.
 
+## Future Improvements
+
+- Create source and replica databases using the redis-cli
+
 ## License
 
 This project is licensed under the MIT License.
