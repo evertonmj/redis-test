@@ -52,14 +52,14 @@ In this project, some Redis Enterprise features are tested and validated. It inc
 
 3.3 When the compile is finished, the executable will be in the `src/` folder. Use redis-cli to connect and interact with your databases.
 
-3.3.1 Create a record:
+3.3.1 Connect to source-db and create a record:
 
     ```bash
     ./src/redis-cli -u redis://[[SOURCE_DB_ENDPOINT]]
     SET test:tb:1 "test ok"
     ```
 
-3.3.2 Check the replica database for the record:
+3.3.2 Connecto to replica-db and check the replica database for the record:
 
     ```bash
     ./src/redis-cli -u redis://[[REPLICA_DB_ENDPOINT]]
