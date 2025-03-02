@@ -13,7 +13,7 @@ In this project, some Redis Enterprise features are tested and validated. It inc
 
 ## How to connect and run replication tests
 
-### Disclaimer: These instructions assume that you have a direct connection with your Redis Cluster via a terminal. The examples below consider that you are connected to a Bastion Host in a private VPC with a host running Alpine Linux and Ubuntu.
+#### Disclaimer: These instructions assume that you have a direct connection with your Redis Cluster via a terminal. The examples below consider that you are connected to a Bastion Host in a private VPC with a host running Alpine Linux
 
 1. **Create your cluster and databases**
    The first step is to create your cluster and your databases. [Here](https://redis.io/docs/latest/operate/rs/databases/create/) there is a doc explaining this process. To run the Replication Test, you need to create two databases and configure replication. You can find detailed instructions [here](replication_test/README.md). Don't forget to take note of database endpoints. They will be necessary in the next steps.
