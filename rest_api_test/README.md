@@ -3,25 +3,25 @@
 ## Overview
 This Python script provides a complete interface to interact with a Redis API. It automates the management of roles, databases, and users, offering functionalities such as:
 
-- Create a New Database: Utilize the Database API to create a new database without using any modules.
-- Create Three New Users: Utilize the Users API to add three new users to the system with the following details:
-a. Email: john.doe@example.com, Name: John Doe, Role: db_viewer
-b. Email: mike.smith@example.com, Name: Mike Smith, Role: db_member
-c. Email: cary.johnson@example.com, Name: Cary Johnson, Role: admin
-- List and Display Users: Utilize the Users API to fetch and display all users in the specified format (name, role, and email).
-- Delete the Created Database: Database API to delete the previously created database
+- **Create a New Database**: Utilize the Database API to create a new database without using any modules.
+- **Create Three New Users**: Utilize the Users API to add three new users to the system with the following details:
+  - Email: john.doe@example.com, Name: John Doe, Role: db_viewer
+  - Email: mike.smith@example.com, Name: Mike Smith, Role: db_member
+  - Email: cary.johnson@example.com, Name: Cary Johnson, Role: admin
+- **List and Display Users**: Utilize the Users API to fetch and display all users in the specified format (name, role, and email).
+- **Delete the Created Database**: Use the Database API to delete the previously created database.
 
 ## Features
 - **Secure API Requests**: Uses `requests` with `HTTPBasicAuth` for authentication.
 - **Error Handling**: Detects connection failures, invalid requests, and authentication errors.
 - **Configuration Management**: Uses a separate `config.py` file for parameters and API settings.
-- **Automated Execution**: The script run all operations in sequence.
+- **Automated Execution**: The script runs all operations in sequence.
 
 ## Prerequisites
 - Python 3.x and PIP 3.x installed on your system.
-- redis-cli tool installed on your system
+- `redis-cli` tool installed on your system.
 
-Dependencies:
+### Dependencies
 ```bash
 pip install requests urllib3
 ```
