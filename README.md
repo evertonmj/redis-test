@@ -1,14 +1,29 @@
 # Redis Test
 
 ## Overview
-This project provides tools and scripts for managing and testing Redis databases. It includes:
+In this project some Redis Enterprise features are tested and validated. It includes:
 
-1. **Replication Test**: A script to test Redis replication and verify data synchronization between primary and replica databases.
-2. **API Test**: A Python script to automate Redis database management via a REST API, including creating databases, users, and roles.
+**Datbases Replication Test**: A script to test Redis database replication and verify data synchronization between primary and replica databases.
 
-## Replication Test
+**REST API Test**: A Python script to automate Redis database management via its REST API, including creatin and management of databases, users, and roles.
+
+**Main Instructions**: To perform these tests, you will need a Redis Enterprise account with privileges to manage difrerente databased. It is recommended admin roles to perform all validations. If you don't have an account, you can try it for free. Follow this link for more info: [Try it for free](https://redis.io/try-free/).
+
+------------
+
+1. ## Before Running the Scripts
+
+## Requirements
+* You must have a Redis Enterprise Account. You can try it for free here: [Try it for free](https://redis.io/try-free/).
+
+* You must have access to a computer terminal. If you are using Microsoft Windows, [Powershell](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.5) is highly recommended.
+
+
+2. ## Database Replication Test
 
 The replication test script verifies data synchronization between a primary Redis database and its replica. This ensures that changes made in the primary database are correctly reflected in the replica.
+
+This script was written in pure *nix bash and redis-cli tool. For more information on using the Redis CLI, refer to the [official documentation](https://redis.io/docs/latest/develop/tools/cli/).
 
 ### Instructions
 
@@ -16,7 +31,7 @@ The replication test script verifies data synchronization between a primary Redi
 2. Ensure both the primary and replica databases are properly configured.
 3. Verify that data inserted into the primary database is replicated to the replica database.
 
-## API Test
+2. ## API Test
 
 The API test script automates the process of managing Redis databases via a REST API. It allows operations such as:
 - Creating and deleting databases.

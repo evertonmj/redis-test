@@ -3,7 +3,7 @@
 SOURCE_DB="redis://$SOURCE_DATABASE_HOST"
 REPLICA_DB="redis://$REPLICA_DATABASE_HOST"
 
-#echo "Starting input source databases..."
+echo "Starting input source databases..."
 
 for value in $(seq 1 100);
 do
