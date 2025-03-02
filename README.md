@@ -1,103 +1,76 @@
-# Redis Testing Suite
+# Redis Test
 
 ## Overview
-This project provides a comprehensive testing framework for Redis, including:
-- **Replication Testing**: Ensures data consistency across Redis replicas.
-- **Redis API Testing**: Automates the creation and management of databases, roles, and users via a Redis API.
+This project provides tools and scripts for managing and testing Redis databases. It includes:
 
-The suite includes:
-1. **Replication Test** (`replication_test.sh`): Simulates data insertion in a source Redis instance and verifies replication in a replica.
-2. **Redis API Test** (`redis_api_test.py`): Automates API-based Redis management, including database creation, user management, and role assignment.
-3. **Main Script** (`main.py`): A CLI interface to run either of the above tests.
+1. **Replication Test**: A script to test Redis replication and verify data synchronization between primary and replica databases.
+2. **API Test**: A Python script to automate Redis database management via a REST API, including creating databases, users, and roles.
+
+## Replication Test
+
+The replication test script verifies data synchronization between a primary Redis database and its replica. This ensures that changes made in the primary database are correctly reflected in the replica.
+
+### Instructions
+
+1. Set up and run the test by following the steps in [replication_test/README.md](replication_test/README.md).
+2. Ensure both the primary and replica databases are properly configured.
+3. Verify that data inserted into the primary database is replicated to the replica database.
+
+## API Test
+
+The API test script automates the process of managing Redis databases via a REST API. It allows operations such as:
+- Creating and deleting databases.
+- Managing roles and permissions.
+- Creating, updating, and deleting users.
+- Listing registered users in Redis.
+
+### Instructions
+
+1. Set up and run the API test by following the steps in [api_test/README.md](api_test/README.md).
+2. Ensure the API is available and accessible.
+3. Verify that data managed through the API is correctly reflected in the Redis system.
 
 ## Prerequisites
-Before running the tests, install the required dependencies:
+To run the test scripts correctly, ensure you meet the following requirements:
+
+- Redis Enterprise installed and properly configured.
+- Python 3.x installed on your system.
+- Install required dependencies:
 
 ```bash
 pip install requests urllib3
 ```
 
-Ensure Redis CLI is installed for replication tests:
-```bash
-sudo apt install redis-tools  # Debian/Ubuntu
-brew install redis  # macOS
-```
-
 ## Environment Variables
-
-Set up the following environment variables in a `.env` file or export them in your shell:
+Before running the scripts, set up the following environment variables in a `.env` file or export them in the terminal:
 
 ```properties
 export REDIS_BASE_URL=[[YOUR_ENDPOINT]]
 export API_USERNAME=[[YOUR_USER]]
-export API_PASSWORD=[[YOUR_PASS]]
-export SOURCE_DATABASE_HOST=[[SOURCE_DB]]
-export REPLICA_DATABASE_HOST=[[REPLICA_DB]]
-
+export API_PASSWORD=[[YOUR_PASSWORD]]
+export SOURCE_DATABASE_HOST=[[SOURCE_DB_HOST]]
+export REPLICA_DATABASE_HOST=[[REPLICA_DB_HOST]]
 ```
 
-## Configuration
+If using a `.env` file, load it into the session before executing the scripts:
 
-
-The framework relies on a `config.py` file to store environment-specific parameters. Create `config.py` in the `rest_api_test` directory:
-
-```python
-# config.py
-
-BASE_URL = "https://your-redis-api-url/v1"
-USERNAME = "your-admin-username"
-PASSWORD = "your-admin-password"
-
-ROLES = [
-    {"name": "db_viewer"},
-    {"name": "db_member"}
-]
-
-DB_NAME = "test_database"
-DB_MAX_MEMORY = 1073741824  # 1GB
-
-USERS = [
-    {"email": "john.doe@example.com", "name": "John Doe", "role": "db_viewer", "password": "securePass123"},
-    {"email": "mike.smith@example.com", "name": "Mike Smith", "role": "db_member", "password": "securePass123"},
-    {"email": "cary.johnson@example.com", "name": "Cary Johnson", "role": "admin", "password": "securePass123"}
-]
-```
-
-## Running Tests
-To execute the testing framework, run:
 ```bash
-python main.py
-```
-You will be prompted to choose a test:
-1. Replication Test
-2. Redis API Test
-3. Exit
-
-### Running Tests Individually
-#### Replication Test
-Manually run the replication test:
-```bash
-bash replication_test/replication_test.sh
-```
-
-#### Redis API Test
-Execute the Redis API test independently:
-```bash
-python -m rest_api_test.redis_api_test
+source .env
 ```
 
 ## Troubleshooting
-- **Replication Not Working?**
-  - Ensure both source and replica Redis instances are properly configured.
-  - Check `redis-cli info replication` on both nodes.
+### 1. Replication is not working
+- Ensure the primary and replica databases are correctly configured.
+- Use the command `redis-cli info replication` to check replication status.
 
-- **API Authentication Failure?**
-  - Verify credentials in `config.py`.
-  - Ensure the API server is running and accessible.
+### 2. Unable to access the API
+- Ensure the API URL (`REDIS_BASE_URL`) in `config.py` is correct.
+- Verify that the credentials (`API_USERNAME`, `API_PASSWORD`) are valid.
+- Check that the API server is running.
 
-- **Users or Roles Not Appearing?**
-  - Confirm that roles exist before assigning them to users.
-  - Run `list_users()` to check user creation.
+### 3. Users or roles do not appear in Redis
+- Ensure that roles are created before assigning them to users.
+- Use the `list_users()` function in the API test script to verify registered users.
 
 ## License
 This project is licensed under the MIT License.
