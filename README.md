@@ -32,9 +32,12 @@ The API test script automates the process of managing Redis databases, including
 Set up the following environment variables in a `.env` file or export them in your shell:
 
 ```properties
-export REDIS_BASE_URL="https://your-redis-base-url"
-export API_USERNAME="your-username"
-export API_PASSWORD="your-password"
+export REDIS_BASE_URL=[[YOUR_ENDPOINT]]
+export API_USERNAME=[[YOUR_USER]]
+export API_PASSWORD=[[YOUR_PASS]]
+export SOURCE_DATABASE_HOST=[[SOURCE_DB]]
+export REPLICA_DATABASE_HOST=[[REPLICA_DB]]
+
 ```
 
 ## License

@@ -1,13 +1,7 @@
 # Redis API Automation
 
 ## Overview
-This Python script automates the process of managing a Redis database via API. It provides functionalities to:
-
-- Create roles
-- Create a database
-- Create users
-- List users
-- Delete a database
+This Python script automates the process of managing a Redis database via API.
 
 ## Prerequisites
 Ensure you have the following dependencies installed:

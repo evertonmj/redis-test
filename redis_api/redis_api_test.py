@@ -75,7 +75,7 @@ class RedisAPI:
         if response:
             print(f"Database with UID {db_uid} deleted successfully.")
 
-    def main():
+    def run_all(self):
         try:
             redis_api = RedisAPI(config.BASE_URL, config.USERNAME, config.PASSWORD)
         except ValueError as e:
@@ -96,4 +96,4 @@ class RedisAPI:
         redis_api.delete_database(db_uid)
 
     if __name__ == "__main__":
-        main()
+        run_all()
