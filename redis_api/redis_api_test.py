@@ -1,9 +1,9 @@
 import requests
 from requests.auth import HTTPBasicAuth
 import urllib3
-import config  # Importa o arquivo de configuração
+import config 
 
-# Desativar avisos de certificado inseguro
+# disable SSL warnings
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 class RedisAPI:
@@ -81,20 +81,15 @@ if __name__ == "__main__":
         print(f"Configuration Error: {e}")
         exit(1)
 
-    # Criar roles necessários
     for role in config.ROLES:
         redis_api.create_role(role)
 
-    # Criar banco de dados
     db_info = redis_api.create_database(config.DB_NAME, config.DB_MAX_MEMORY)
     db_uid = db_info.get("uid") if db_info else None
 
-    # Criar usuários
     for user in config.USERS:
         redis_api.create_user(user)
 
-    # Listar usuários
     redis_api.list_users()
 
-    # Deletar banco de dados
     redis_api.delete_database(db_uid)
