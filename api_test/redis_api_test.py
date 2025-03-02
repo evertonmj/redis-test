@@ -77,9 +77,9 @@ db_name = "ever-db-01"
 db_uid = create_database(base_url, auth, db_name)
 
 users = [
-    {"email": "john.doe@example.com", "name": "John Doe", "role": "db_viewer"},
-    {"email": "mike.smith@example.com", "name": "Mike Smith", "role": "db_member"},
-    {"email": "cary.johnson@example.com", "name": "Cary Johnson", "role": "admin"}
+    {"email": "john.doe@example.com", "name": "John Doe", "role": "db_viewer", "password": "twinpeaks2402"},
+    {"email": "mike.smith@example.com", "name": "Mike Smith", "role": "db_member", "password": "twinpeaks2402"},
+    {"email": "cary.johnson@example.com", "name": "Cary Johnson", "role": "admin", "password": "twinpeaks2402"}
 ]
 
 for user in users:

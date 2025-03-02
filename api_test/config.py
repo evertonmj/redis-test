@@ -1,15 +1,19 @@
+import os
+
 # config.py
 
-BASE_URL = "https://172.16.22.21:9443/v1"
-USERNAME = "admin@rl.org"
-PASSWORD = "mkZGAIu"
+BASE_URL = os.getenv("REDIS_BASE_URL", "REST_API_ENDPOINT")
+USERNAME = os.getenv("API_USERNAME", "user")
+PASSWORD = os.getenv("API_PASSWORD", "pass")
 
 ROLES = ["db_viewer", "db_member"]
 
 DB_NAME = "database1"
+DB_MAX_MEMORY = 1073741824
 
+USER_DEFAULT_PASSWORD = "twinpeaks2402"
 USERS = [
-    {"email": "john.doe@example.com", "name": "John Doe", "role": "db_viewer"},
-    {"email": "mike.smith@example.com", "name": "Mike Smith", "role": "db_member"},
-    {"email": "cary.johnson@example.com", "name": "Cary Johnson", "role": "admin"}
+    {"email": "john.doe@example.com", "name": "John Doe", "role": "db_viewer", "password": USER_DEFAULT_PASSWORD},
+    {"email": "mike.smith@example.com", "name": "Mike Smith", "role": "db_member",  "password": USER_DEFAULT_PASSWORD},
+    {"email": "cary.johnson@example.com", "name": "Cary Johnson", "role": "admin", "password": USER_DEFAULT_PASSWORD}
 ]

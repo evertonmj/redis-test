@@ -25,12 +25,12 @@ class RedisAPI:
         data = {"name": role_name}
         return self._make_request("POST", "/roles", data)
 
-    def create_database(self, db_name):
-        data = {"name": db_name, "memory_size": 1073741824}
+    def create_database(self, db_name, max_memory):
+        data = {"name": db_name, "memory_size": max_memory}
         return self._make_request("POST", "/bdbs", data)
 
-    def create_user(self, email, name, role, password="defaultPass123"):
-        data = {"email": email, "name": name, "role": role, "password": password}
+    def create_user(self, user):
+        data = {"email": user['email'], "name": user['name'], "role": user['role'], "password": user['password']}
         return self._make_request("POST", "/users", data)
 
     def list_users(self):
@@ -54,12 +54,13 @@ for role in config.ROLES:
     redis_api.create_role(role)
 
 # Criar banco de dados
-db_info = redis_api.create_database(config.DB_NAME)
+db_info = redis_api.create_database(config.DB_NAME, config.DB_MAX_MEMORY)
+
 db_uid = db_info.get("uid") if db_info else None
 
 # Criar usuários
 for user in config.USERS:
-    redis_api.create_user(user['email'], user['name'], user['role'])
+    redis_api.create_user(user)
 
 # Listar usuários
 redis_api.list_users()
