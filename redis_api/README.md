@@ -22,9 +22,11 @@ The script uses a `config.py` file to store important parameters. Create a `conf
 ```python
 # config.py
 
-BASE_URL = "https://your-redis-api-url/v1"
-USERNAME = "your-admin-username"
-PASSWORD = "your-admin-password"
+import os
+
+BASE_URL = os.getenv("REDIS_BASE_URL", "https://your-redis-api-url/v1")
+USERNAME = os.getenv("API_USERNAME", "your-admin-username")
+PASSWORD = os.getenv("API_PASSWORD", "your-admin-password")
 
 ROLES = [
     {"name": "db_viewer"},
@@ -34,10 +36,11 @@ ROLES = [
 DB_NAME = "database1"
 DB_MAX_MEMORY = 1073741824  # 1GB
 
+USER_DEFAULT_PASSWORD = "securePass123"
 USERS = [
-    {"email": "john.doe@example.com", "name": "John Doe", "role": "db_viewer", "password": "securePass123"},
-    {"email": "mike.smith@example.com", "name": "Mike Smith", "role": "db_member", "password": "securePass123"},
-    {"email": "cary.johnson@example.com", "name": "Cary Johnson", "role": "admin", "password": "securePass123"}
+    {"email": "john.doe@example.com", "name": "John Doe", "role": "db_viewer", "password": USER_DEFAULT_PASSWORD},
+    {"email": "mike.smith@example.com", "name": "Mike Smith", "role": "db_member", "password": USER_DEFAULT_PASSWORD},
+    {"email": "cary.johnson@example.com", "name": "Cary Johnson", "role": "admin", "password": USER_DEFAULT_PASSWORD}
 ]
 ```
 

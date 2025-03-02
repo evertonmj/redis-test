@@ -47,14 +47,14 @@ make redis-cli
 
 #### 4.5 Copy Redis executable
 ```sh
-sudo cp src/redis-cli ~
+sudo cp src/redis-cli /usr/local/bin/
 ```
 
 #### 4.6 Connect to source database and insert value
 
 ##### 4.6.1 Connect to source db node: 
 ```sh
-./src/redis-cli -u redis://<SOURCE_DB_ENDPOINT>>:<SOURCE_DB_PORT>
+redis-cli -u redis://<SOURCE_DB_ENDPOINT>:<SOURCE_DB_PORT>
 ```
 
 ##### 4.6.2 Insert value
@@ -66,7 +66,7 @@ SET test:tb:1 "test ok"
 
 ##### 4.7.1 Connect to replica db node: 
 ```sh
-./src/redis-cli -u redis://<REPLICA_DB_ENDPOINT>>:<REPLICA_DB_PORT>
+redis-cli -u redis://<REPLICA_DB_ENDPOINT>:<REPLICA_DB_PORT>
 ```
 
 ##### 4.7.2 Check if value is inserted
@@ -90,11 +90,11 @@ vim replication-test.sh
 
 ##### 5.2.2 Update endpoints
 
-Update endpoints for SOURCE_DB and REPLICA_DB with recent created databases and close the file.
+Update endpoints for SOURCE_DB and REPLICA_DB with recently created databases and close the file.
 
-Press esc key and them `:wq` to save and exit.
+Press esc key and then `:wq` to save and exit.
 
-#### 5.2 Execute
+#### 5.3 Execute
 ```sh
 sh replication-test.sh
 ```

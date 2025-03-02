@@ -27,6 +27,16 @@ The API test script automates the process of managing Redis databases, including
 - Python 3.x installed
 - Required Python packages: `requests`, `urllib3`
 
+## Environment Variables
+
+Set up the following environment variables in a `.env` file or export them in your shell:
+
+```properties
+export REDIS_BASE_URL="https://your-redis-base-url"
+export API_USERNAME="your-username"
+export API_PASSWORD="your-password"
+```
+
 ## License
 
 This project is licensed under the MIT License.
