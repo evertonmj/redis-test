@@ -1,11 +1,13 @@
 import os
 import subprocess
-import redis_api.config as config
+import config  # Corrected import statement
 from redis_api.redis_api_test import RedisAPI
 
 def run_replication_test():
-    script_path = os.path.join(os.path.dirname(__file__), 'replication_test', 'replication-test.sh')
-    subprocess.run(['bash', script_path])
+    subprocess.run(['bash', os.path.join(os.path.dirname(__file__), 'replication_test', 'replication_test.sh')])
+
+def run_api_test():
+    run_redis_api_test()
 
 def run_redis_api_test():
     try:
@@ -64,7 +66,7 @@ def main():
         if choice == "1":
             run_replication_test()
         elif choice == "2":
-            subprocess.run(['python', os.path.join(os.path.dirname(__file__), 'redis_api', 'redis_api_test.py')])
+            run_api_test()
         elif choice == "3":
             print("Exiting...")
             break

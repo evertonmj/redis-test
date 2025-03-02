@@ -75,22 +75,25 @@ class RedisAPI:
         if response:
             print(f"Database with UID {db_uid} deleted successfully.")
 
-if __name__ == "__main__":
-    try:
-        redis_api = RedisAPI(config.BASE_URL, config.USERNAME, config.PASSWORD)
-    except ValueError as e:
-        print(f"Configuration Error: {e}")
-        exit(1)
+    def main():
+        try:
+            redis_api = RedisAPI(config.BASE_URL, config.USERNAME, config.PASSWORD)
+        except ValueError as e:
+            print(f"Configuration Error: {e}")
+            exit(1)
 
-    for role in config.ROLES:
-        redis_api.create_role(role)
+        for role in config.ROLES:
+            redis_api.create_role(role)
 
-    db_info = redis_api.create_database(config.DB_NAME, config.DB_MAX_MEMORY)
-    db_uid = db_info.get("uid") if db_info else None
+        db_info = redis_api.create_database(config.DB_NAME, config.DB_MAX_MEMORY)
+        db_uid = db_info.get("uid") if db_info else None
 
-    for user in config.USERS:
-        redis_api.create_user(user)
+        for user in config.USERS:
+            redis_api.create_user(user)
 
-    redis_api.list_users()
+        redis_api.list_users()
 
-    redis_api.delete_database(db_uid)
+        redis_api.delete_database(db_uid)
+
+    if __name__ == "__main__":
+        main()
