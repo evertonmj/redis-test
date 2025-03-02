@@ -12,9 +12,12 @@ Ensure you have Redis installed and running. You will also need:
 
 - Source and replica databases configured.
 
+- Access to your cluster directly or through a bastion host. You can check how to interact with your Redis resources at this [link](https://redis.io/docs/latest/develop/tools/).
+
 - `redis-cli` installed.
     To install redis-cli at your system you can refe
-- Environment variables configured for source and replica databases.
+
+- Environment variables configured for source and replica database endpoints.
 
 ## Configuration
 
@@ -36,6 +39,8 @@ Alternatively, you can create a `.env` file and load it using:
 ```sh
 source .env
 ```
+
+4. Connect to your cluster and run script.
 
 ## How It Works
 

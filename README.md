@@ -26,6 +26,8 @@ In this project some Redis Enterprise features are tested and validated. It incl
 
 You can perform this tests by running the main python script (main.py) or by running individual test script.
 
+- Before running, it's important to ensure that you have connectivity to your cluster. For example, private VPC endpoints will work only if you are connected to you cluster.
+
 - To run main script: `python main.py`
 
 2. ## Database Replication Test
