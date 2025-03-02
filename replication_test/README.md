@@ -6,6 +6,7 @@ This guide will help you set up a Redis replication test using Redis Enterprise 
 
 - Redis Enterprise installed and configured
 - Access to a load node
+- Redis CLI installed (follow the steps in `_resources/redis-enterprise.sh`)
 
 ## Instructions
 
@@ -76,25 +77,30 @@ GET test:tb:1
 
 ### 5. Run test case ###
 
-#### 5.1 Download test script
+#### 5.1 Set environment variables
+
+Set the environment variables for the source and replica databases:
 ```sh
-wget https://raw.githubusercontent.com/evertonmj/redis-test/refs/heads/main/replication-test.sh
+export SOURCE_DATABASE_HOST=<SOURCE_DB_ENDPOINT>:<SOURCE_DB_PORT>
+export REPLICA_DATABASE_HOST=<REPLICA_DB_ENDPOINT>:<REPLICA_DB_PORT>
 ```
 
-#### 5.2 Update databases endpoints
-
-##### 5.2.1 Open the replication-test.sh file
+#### 5.2 Download test script
 ```sh
-vim replication-test.sh
+wget https://raw.githubusercontent.com/evertonmj/redis-test/refs/heads/main/replication_test.sh
 ```
-
-##### 5.2.2 Update endpoints
-
-Update endpoints for SOURCE_DB and REPLICA_DB with recently created databases and close the file.
-
-Press esc key and then `:wq` to save and exit.
 
 #### 5.3 Execute
 ```sh
-sh replication-test.sh
+sh replication_test.sh
 ```
+
+## Expected Output
+
+The script will:
+1. Push numbers from 1 to 100 to the source database.
+2. Pop numbers from the replica database.
+
+## License
+
+This project is licensed under the MIT License.

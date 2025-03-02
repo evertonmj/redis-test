@@ -23,8 +23,8 @@ USERNAME = os.getenv("API_USERNAME", "your-admin-username")
 PASSWORD = os.getenv("API_PASSWORD", "your-admin-password")
 
 ROLES = [
-    {"name": "db_viewer"},
-    {"name": "db_member"}
+    {"name": "db_viewer", "management": "db_viewer"},
+    {"name": "db_member", "management": "db_member"}
 ]
 
 DB_NAME = "database1"
