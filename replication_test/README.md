@@ -1,106 +1,56 @@
-# Redis Replication Test
+Redis Replication Test Script
 
-This guide will help you set up a Redis replication test using Redis Enterprise databases.
+Overview
 
-## Prerequisites
+This Bash script is designed to test Redis replication by inserting values into a source database and then retrieving them from a replica database.
 
-- Redis Enterprise installed and configured
-- Access to a load node
-- Redis CLI installed (follow the steps in `_resources/redis-enterprise.sh`)
+Prerequisites
 
-## Instructions
+Ensure you have Redis installed and running. You will also need:
 
-### 1. Create Source Database
+redis-cli installed.
 
-Create a single-sharded Redis Enterprise database named `source-db` with no password and a memory limit of 2GB. You can learn how to create Redis Enterprise databases [here](https://docs.redislabs.com/latest/rs/administering/creating-databases/).
+Environment variables configured for source and replica databases.
 
-### 2. Enable Replica Of
+Configuration
 
-Create another single-sharded Redis Enterprise database named `replica-db` with no password and a memory limit of 2GB. Use `source-db` as the source database.
+Set the following environment variables before running the script:
 
-### 3. Connect on the bastion host using the link on doc page
+export SOURCE_DATABASE_HOST="your-source-redis-host"
+export REPLICA_DATABASE_HOST="your-replica-redis-host"
 
-### 4. Install and configure tools:
+Alternatively, you can create a .env file and load it using:
 
-#### 4.1 Update package manager
-```sh
-apk update && apk upgrade 
-apk add --update alpine-sdk
-```
+source .env
 
-#### 4.2 Install git, bash and compiling tools
-```sh
-apk add --no-cache bash git openssh make cmake python3
-pip3 install requests
-```
+How It Works
 
-#### 4.3 Get redis source code
-```sh
-wget http://download.redis.io/redis-stable.tar.gz
-```
+The script pushes numbers from 1 to 100 into a Redis list (list:numbers) on the source database.
 
-#### 4.4 Unpack and compile redis
-```sh
-tar xvzf redis-stable.tar.gz
-cd redis-stable
-make redis-cli
-```
+The script then pops these numbers from the replica database to verify replication.
 
-#### 4.5 Copy Redis executable
-```sh
-sudo cp src/redis-cli /usr/local/bin/
-```
+Running the Script
 
-#### 4.6 Connect to source database and insert value
+Execute the script using:
 
-##### 4.6.1 Connect to source db node: 
-```sh
-redis-cli -u redis://<SOURCE_DB_ENDPOINT>:<SOURCE_DB_PORT>
-```
+chmod +x replication_test.sh
+./replication_test.sh
 
-##### 4.6.2 Insert value
-```sh
-SET test:tb:1 "test ok"
-```
+Expected Output
 
-#### 4.7 Connect to replica database and check if value is inserted
+Confirmation that numbers were successfully added to the source database.
 
-##### 4.7.1 Connect to replica db node: 
-```sh
-redis-cli -u redis://<REPLICA_DB_ENDPOINT>:<REPLICA_DB_PORT>
-```
+Confirmation that numbers were retrieved from the replica database.
 
-##### 4.7.2 Check if value is inserted
-```sh
-GET test:tb:1
-```
+Troubleshooting
 
-### 5. Run test case ###
+If replication does not work, ensure the source and replica databases are correctly configured.
 
-#### 5.1 Set environment variables
+Check the Redis logs to verify that replication is active.
 
-Set the environment variables for the source and replica databases:
-```sh
-export SOURCE_DATABASE_HOST=<SOURCE_DB_ENDPOINT>:<SOURCE_DB_PORT>
-export REPLICA_DATABASE_HOST=<REPLICA_DB_ENDPOINT>:<REPLICA_DB_PORT>
-```
+Use redis-cli to manually inspect the list:numbers on both databases.
 
-#### 5.2 Download test script
-```sh
-wget https://raw.githubusercontent.com/evertonmj/redis-test/refs/heads/main/replication_test.sh
-```
-
-#### 5.3 Execute
-```sh
-sh replication_test.sh
-```
-
-## Expected Output
-
-The script will:
-1. Push numbers from 1 to 100 to the source database.
-2. Pop numbers from the replica database.
-
-## License
+License
 
 This project is licensed under the MIT License.
+
