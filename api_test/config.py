@@ -17,3 +17,13 @@ USERS = [
     {"email": "mike.smith@example.com", "name": "Mike Smith", "role": "db_member",  "password": USER_DEFAULT_PASSWORD},
     {"email": "cary.johnson@example.com", "name": "Cary Johnson", "role": "admin", "password": USER_DEFAULT_PASSWORD}
 ]
+
+ROLES = [
+    {
+        "name": "db_viewer",
+        "management": "db_viewer"
+    }, {
+        "name": "db_member",
+        "management": "db_member"
+    }
+]

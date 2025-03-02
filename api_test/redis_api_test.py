@@ -1,90 +1,100 @@
 import requests
 from requests.auth import HTTPBasicAuth
 import urllib3
+import config  # Importa o arquivo de configuração
 
-# Disable SSL warnings
+# Desativar avisos de certificado inseguro
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-def create_role(base_url, auth, role_name, role_management):
-    url = f"{base_url}/roles"
-    data = {"name": role_name, "management": role_management}
-    response = requests.post(url, auth=auth, json=data, verify=False)
-    if response.status_code == 200:
-        print(f"Role created - Name: {role_name} / ID: {response.json().get('uid')}")
-    else:
-        print("Error creating role")
+class RedisAPI:
+    def __init__(self, base_url, username, password):
+        if not base_url or not username or not password:
+            raise ValueError("Missing required API configuration parameters.")
+        
+        self.base_url = base_url
+        self.auth = HTTPBasicAuth(username, password)
 
-def create_database(base_url, auth, db_name):
-    url = f"{base_url}/bdbs"
-    data = {"name": db_name, "memory_size": 1073741824}
-    response = requests.post(url, auth=auth, json=data, verify=False)
-    
-    if response.status_code == 200:
-        db_info = response.json()
-        print(f"Database created - Name: {db_info['name']}, UID: {db_info['uid']}")
-    else:
-        print("Error creating database")
+    def _make_request(self, method, endpoint, data=None):
+        url = f"{self.base_url}{endpoint}"
+        try:
+            response = requests.request(method, url, auth=self.auth, json=data, verify=False)
+            response.raise_for_status()
+            print(f"Success: {method} {endpoint} - Status Code: {response.status_code}")
+            return response.json()
+        except requests.exceptions.HTTPError as http_err:
+            print(f"HTTP error occurred: {http_err} - Response: {response.text}")
+        except requests.exceptions.ConnectionError as conn_err:
+            print(f"Connection error occurred: {conn_err}")
+        except requests.exceptions.Timeout as timeout_err:
+            print(f"Timeout error occurred: {timeout_err}")
+        except requests.exceptions.RequestException as req_err:
+            print(f"Request error occurred: {req_err}")
+        return None
 
-    return response.json().get("uid") if response.status_code == 200 else None
+    def create_role(self, role):
+        if "name" not in role or not role["name"]:
+            print("Invalid role data. 'name' is required.")
+            return
+        response = self._make_request("POST", "/roles", role)
+        if response:
+            print(f"Role '{role['name']}' created successfully.")
 
-def create_user(base_url, auth, email, name, role, password="defaultPass123"):
-    url = f"{base_url}/users"
-    data = {"email": email, "name": name, "role": role, "password": password}
-    response = requests.post(url, auth=auth, json=data, verify=False)
-    if response.status_code == 200:
-        user = response.json()
-        print(f"User Created - ID: {user['uid']}, Name: {user['name']}")
-    else:
-        print("Error creating user")
+    def create_database(self, db_name, max_memory):
+        if not db_name or not isinstance(max_memory, int) or max_memory <= 0:
+            print("Invalid database parameters.")
+            return None
+        data = {"name": db_name, "memory_size": max_memory}
+        response = self._make_request("POST", "/bdbs", data)
+        if response:
+            print(f"Database '{db_name}' created successfully with UID {response.get('uid')}.")
+        return response
 
-def list_users(base_url, auth):
-    url = f"{base_url}/users"
-    response = requests.get(url, auth=auth, verify=False)
-    if response.status_code == 200:
-        users = response.json()
-        for user in users:
-            print(f"Name: {user['name']}, Role: {user['role']}, Email: {user['email']}")
-    else:
-        print("Error")
+    def create_user(self, user):
+        required_keys = ["email", "name", "role", "password"]
+        if not all(key in user and user[key] for key in required_keys):
+            print("Invalid user data. 'email', 'name', 'role', and 'password' are required.")
+            return
+        response = self._make_request("POST", "/users", user)
+        if response:
+            print(f"User '{user['name']}' created successfully.")
 
-def delete_database(base_url, auth, db_uid):
-    if not db_uid:
-        print("Database UID not found, skipping deletion.")
-        return
-    url = f"{base_url}/bdbs/{db_uid}"
-    response = requests.delete(url, auth=auth, verify=False)
-    print("Delete Database Status:", response.status_code)
+    def list_users(self):
+        users = self._make_request("GET", "/users")
+        if users:
+            print("Registered Users:")
+            for user in users:
+                print(f"- Name: {user['name']}, Role: {user['role']}, Email: {user['email']}")
+        return users
 
-# Definição da URL e credenciais
-base_url = "https://172.16.22.21:9443/v1"
-auth = HTTPBasicAuth("admin@rl.org", "mkZGAIu")
+    def delete_database(self, db_uid):
+        if not db_uid:
+            print("Database UID not found, skipping deletion.")
+            return
+        response = self._make_request("DELETE", f"/bdbs/{db_uid}")
+        if response:
+            print(f"Database with UID {db_uid} deleted successfully.")
 
-# Criar roles necessários
-roles = [
-    {
-        "name": "db_viewer",
-        "management": "db_viewer"
-    }, {
-        "name": "db_member",
-        "management": "db_member"
-    }
-]
+if __name__ == "__main__":
+    try:
+        redis_api = RedisAPI(config.BASE_URL, config.USERNAME, config.PASSWORD)
+    except ValueError as e:
+        print(f"Configuration Error: {e}")
+        exit(1)
 
-for role in roles:
-    create_role(base_url, auth, role['name'], role['management'])
+    # Criar roles necessários
+    for role in config.ROLES:
+        redis_api.create_role(role)
 
-db_name = "ever-db-01"
-db_uid = create_database(base_url, auth, db_name)
+    # Criar banco de dados
+    db_info = redis_api.create_database(config.DB_NAME, config.DB_MAX_MEMORY)
+    db_uid = db_info.get("uid") if db_info else None
 
-users = [
-    {"email": "john.doe@example.com", "name": "John Doe", "role": "db_viewer", "password": "twinpeaks2402"},
-    {"email": "mike.smith@example.com", "name": "Mike Smith", "role": "db_member", "password": "twinpeaks2402"},
-    {"email": "cary.johnson@example.com", "name": "Cary Johnson", "role": "admin", "password": "twinpeaks2402"}
-]
+    # Criar usuários
+    for user in config.USERS:
+        redis_api.create_user(user)
 
-for user in users:
-    create_user(base_url, auth, user['email'], user['name'], user['role'])
+    # Listar usuários
+    redis_api.list_users()
 
-list_users(base_url, auth)
-
-delete_database(base_url, auth, db_uid)
+    # Deletar banco de dados
+    redis_api.delete_database(db_uid)

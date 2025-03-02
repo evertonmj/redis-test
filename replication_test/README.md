@@ -29,7 +29,8 @@ apk add --update alpine-sdk
 
 #### 4.2 Install git, bash and compiling tools
 ```sh
-apk add --no-cache bash git openssh make cmake
+apk add --no-cache bash git openssh make cmake python3
+pip3 install requests
 ```
 
 #### 4.3 Get redis source code
