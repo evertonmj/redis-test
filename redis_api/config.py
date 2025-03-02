@@ -6,9 +6,7 @@ BASE_URL = os.getenv("REDIS_BASE_URL", "REST_API_ENDPOINT")
 USERNAME = os.getenv("API_USERNAME", "user")
 PASSWORD = os.getenv("API_PASSWORD", "pass")
 
-ROLES = ["db_viewer", "db_member"]
-
-DB_NAME = "database1"
+DB_NAME = "ever-database-01"
 DB_MAX_MEMORY = 1073741824
 
 USER_DEFAULT_PASSWORD = "twinpeaks2402"

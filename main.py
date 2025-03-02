@@ -1,10 +1,10 @@
 import os
 import subprocess
-import redis_api.config
+import redis_api.config as config
 from redis_api.redis_api_test import RedisAPI
 
 def run_replication_test():
-    script_path = os.path.join(os.path.dirname(__file__), 'replication_test/replication_test', 'replication-test.sh')
+    script_path = os.path.join(os.path.dirname(__file__), 'replication_test', 'replication_test/replication_test.sh')
     subprocess.run(['bash', script_path])
 
 def run_redis_api_test():
