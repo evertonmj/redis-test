@@ -1,7 +1,7 @@
 import requests
 from requests.auth import HTTPBasicAuth
 import urllib3
-import redis_api.config as config
+import rest_api_test.config as config
 
 
 # disable SSL warnings
