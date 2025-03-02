@@ -10,11 +10,11 @@ make redis-cli
 
 sudo cp src/redis-cli /usr/local/bin/
 
-source: ./src/redis-cli -u redis://redis-19735.re-cluster1.ps-redislabs.org:19735
+source: ./src/redis-cli -u redis://[[ENDPOINT]]
 
     SET test:tb:1 "test ok"
     
-destination:    src/redis-cli -u redis://redis-11027.re-cluster1.ps-redislabs.org:11027
+destination:    src/redis-cli -u redis://[[ENDPOINT]]
 
     GET test:tb:1
 
