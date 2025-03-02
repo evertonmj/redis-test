@@ -7,8 +7,6 @@ In this project some Redis Enterprise features are tested and validated. It incl
 
 **REST API Test**: A Python script to automate Redis database management via its REST API, including creatin and management of databases, users, and roles.
 
-**Main Instructions**: To perform these tests, you will need a Redis Enterprise account with privileges to manage difrerente databased. It is recommended admin roles to perform all validations. If you don't have an account, you can try it for free. Follow this link for more info: [Try it for free](https://redis.io/try-free/).
-
 ------------
 
 0. ## Before Running the Scripts
