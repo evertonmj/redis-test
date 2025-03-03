@@ -48,7 +48,11 @@ class RedisAPI:
         response = self._make_request("POST", "/bdbs", data)
         if response:
             print(f"Database '{db_name}' created successfully with UID {response.get('uid')}.")
-        return response.get('uid')
+            return response.get('uid')
+        else:
+            print(f"Failed to create database '{db_name}'.")
+            return None
+
 
     def create_user(self, user):
         required_keys = ["email", "name", "role", "password"]
@@ -85,6 +89,23 @@ class RedisAPI:
                 flushResponse = self._make_request("PUT", f"/bdbs/{db_uid}", data)
                 response = self._make_request("DELETE", f"/bdbs/{db_uid}")
 
+    def run_create_role_test(self):
+        for role in config.ROLES:
+            self.create_role(role)
+
+    def run_create_database_test(self):
+        db_uid = self.create_database(config.DB_NAME, config.DB_MAX_MEMORY)
+        return db_uid
+
+    def run_create_user_test(self):
+        for user in config.USERS:
+            self.create_user(user)
+
+    def run_list_users_test(self):
+        self.list_users()
+
+    def run_delete_database_test(self, db_uid):
+        self.delete_database(db_uid)
 
     def run_all(self):
         try:
@@ -93,17 +114,11 @@ class RedisAPI:
             print(f"Configuration Error: {e}")
             exit(1)
 
-        for role in config.ROLES:
-            redis_api.create_role(role)
-
-        db_uid = redis_api.create_database(config.DB_NAME, config.DB_MAX_MEMORY)
-
-        for user in config.USERS:
-            redis_api.create_user(user)
-
-        redis_api.list_users()
-
-        redis_api.delete_database(db_uid)
+        redis_api.run_create_role_test()
+        db_uid = redis_api.run_create_database_test()
+        redis_api.run_create_user_test()
+        redis_api.run_list_users_test()
+        redis_api.run_delete_database_test(db_uid)
 
     if __name__ == "__main__":
         run_all()
