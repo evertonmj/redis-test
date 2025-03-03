@@ -1,0 +1,4 @@
+resources/172.16.22.21
+.DS_Store
+rest_api_test/__pycache__/config.cpython-313.pyc
+rest_api_test/__pycache__/redis_api_test.cpython-313.pyc
