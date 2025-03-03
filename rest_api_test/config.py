@@ -15,7 +15,7 @@ import os
 # USERS: A list of user objects with email, name, role, and password.
 # ROLES: A list of role objects with name and management.
 
-BASE_URL = os.getenv("REDIS_BASE_URL", "REST_API_ENDPOINT")
+BASE_URL = os.getenv("REST_API_ENDPOINT", "REST_API_ENDPOINT")
 USERNAME = os.getenv("API_USERNAME", "user")
 PASSWORD = os.getenv("API_PASSWORD", "pass")
 
