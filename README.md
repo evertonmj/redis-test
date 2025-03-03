@@ -42,14 +42,13 @@ In this project, some Redis Enterprise features are tested and validated. It inc
     ```
 
 3.2 Download and compile redis-cli. You can compile the sources or install via your Operating System package manager. Below are the instructions to download and compile:
-
     ```bash
     wget http://download.redis.io/redis-stable.tar.gz
     tar xvzf redis-stable.tar.gz
     cd redis-stable
     make redis-cli
     ```
-
+    
 3.3 When the compile is finished, the executable will be in the `src/` folder. Use redis-cli to connect and interact with your databases.
 
 3.3.1 Connect to source-db and create a record:
@@ -84,7 +83,17 @@ In this project, some Redis Enterprise features are tested and validated. It inc
 2. **Configuration**
    The parameters and data used in the REST API experiment are configured in the `rest_api_test/config.py` file. There are some default parameters, but you can change them to your own scenario. It's important to set your API endpoint, user, and password. Detailed documentation can be found [here](https://redis.io/docs/latest/operate/rs/references/rest-api/) and [here](replication_test/README.md).
 
-3. **Running**
+3. **Environment Variables**
+ Before running the scripts, set up the following environment variables in a `.env` file or export them in the terminal:
+
+    ```properties
+    export REDIS_BASE_URL=[[YOUR_ENDPOINT]]
+    export API_USERNAME=[[YOUR_USER]]
+    export API_PASSWORD=[[YOUR_PASSWORD]]
+    export SOURCE_DATABASE_HOST=[[SOURCE_DB_HOST]]
+    export REPLICA_DATABASE_HOST=[[REPLICA_DB_HOST]]
+
+4. **Running**
    After setting values in the `config.py` file, just run:
 
     ```bash
