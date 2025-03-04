@@ -20,10 +20,10 @@ class RedisAPI:
         try:
             response = requests.request(method, url, auth=self.auth, json=data, verify=False)
             response.raise_for_status()
-            print(f"Success: {method} {endpoint} - Status Code: {response.status_code}")
+            print(f"Success: {method} - Status Code: {response.status_code}")
             return response.json()
         except requests.exceptions.HTTPError as http_err:
-            print(f"HTTP error occurred: {http_err} - Response: {response.text}")
+            print(f"HTTP error occurred: {response.status_code} - Response: {response.text}")
         except requests.exceptions.ConnectionError as conn_err:
             print(f"Connection error occurred: {conn_err}")
         except requests.exceptions.Timeout as timeout_err:
@@ -39,6 +39,8 @@ class RedisAPI:
         response = self._make_request("POST", "/roles", role)
         if response:
             print(f"Role '{role['name']}' created successfully.")
+        else:
+            print("Error while creating role.")
 
     def create_database(self, db_name, max_memory):
         if not db_name or not isinstance(max_memory, int) or max_memory <= 0:
@@ -62,6 +64,8 @@ class RedisAPI:
         response = self._make_request("POST", "/users", user)
         if response:
             print(f"User '{user['name']}' created successfully.")
+        else:
+            print(f"Error creating user")
 
     def list_users(self):
         users = self._make_request("GET", "/users")
@@ -69,6 +73,8 @@ class RedisAPI:
             print("Registered Users:")
             for user in users:
                 print(f"- Name: {user['name']}, Role: {user['role']}, Email: {user['email']}")
+        else:
+            print(f"Error creating users")
         return users
 
     def delete_database(self, db_uid):
@@ -83,11 +89,7 @@ class RedisAPI:
         if response:
             print(f"Database with UID {db_uid} deleted successfully.")
         else:
-            print(f"Retry Database with UID {db_uid} deletion.")
-            for i in range(3):
-                print(f"Retry Database with UID {db_uid} deletion. #{i}")
-                flushResponse = self._make_request("PUT", f"/bdbs/{db_uid}", data)
-                response = self._make_request("DELETE", f"/bdbs/{db_uid}")
+            print(f"It was not possible to delete database {db_uid}. Please try again later")
 
     def run_create_role_test(self):
         for role in config.ROLES:

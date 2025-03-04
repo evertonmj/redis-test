@@ -34,10 +34,9 @@ def run_redis_api_test():
         elif choice == "5":
             run_list_users_test()
         elif choice == "6":
-            if db_uid:
-                run_delete_database_test(db_uid)
-            else:
-                print("No database UID available. Please run the Create Database Test first.")
+            db_delete = input("Enter database UID: ")
+            run_delete_database_test(db_delete)
+            print("No database UID available. Please run the Create Database Test first.")
         elif choice == "7":
             break
         else:
